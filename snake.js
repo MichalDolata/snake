@@ -9,89 +9,95 @@ $(document).ready(function () {
 
     var Snake = function() {
         this.segments = [];
-        for(var i = 0; i < 4; i++) {
-            this.segments.unshift({x: i*sizeOfSegment, y: 0});
+        for (var i = 0; i < 4; i++) {
+            this.segments.unshift({x: i * sizeOfSegment, y: 0});
         }
         this.direction = 'right';
         this.canTurn = true;
-        this.move = function(newSegment) {
-            if(!newSegment) {
-                this.segments.pop();
-            }
+    };
 
-            var newHead = {x: this.segments[0].x, y: this.segments[0].y};
+    Snake.prototype.move = function(newSegment) {
+        if(!newSegment) {
+            this.segments.pop();
+        }
 
-            switch(this.direction) {
-                case 'left':
-                    newHead.x -= sizeOfSegment;
-                    break;
-                case 'right':
-                    newHead.x += sizeOfSegment;
-                    break;
-                case 'up':
-                    newHead.y -= sizeOfSegment;
-                    break;
-                case 'down':
-                    newHead.y += sizeOfSegment;
-                    break;
-            }
+        var newHead = {x: this.segments[0].x, y: this.segments[0].y};
 
-            this.segments.unshift(newHead);
-        };
+        switch(this.direction) {
+            case 'left':
+                newHead.x -= sizeOfSegment;
+                break;
+            case 'right':
+                newHead.x += sizeOfSegment;
+                break;
+            case 'up':
+                newHead.y -= sizeOfSegment;
+                break;
+            case 'down':
+                newHead.y += sizeOfSegment;
+                break;
+        }
+
+        this.segments.unshift(newHead);
     };
 
     var Render = function() {
         this.canvas = $("#snake");
         this.context = this.canvas.get(0).getContext("2d");
-        this.drawFood = function(food) {
-            var context = this.context;
+    };
 
-            context.fillStyle = "black";
-            context.fillRect(food.x + offsetX, food.y + offsetY, sizeOfSegment, sizeOfSegment);
-        };
-        this.drawSegment = function(segment) {
-            var context = this.context;
+    Render.prototype.drawFood = function(food) {
+        var context = this.context;
 
-            context.strokeStyle = "black";
-            context.strokeRect(segment.x + offsetX, segment.y + offsetY, sizeOfSegment, sizeOfSegment);
-        };
-        this.drawScore = function(score) {
-            var context = this.context;
+        context.fillStyle = "black";
+        context.fillRect(food.x + offsetX, food.y + offsetY, sizeOfSegment, sizeOfSegment);
+    };
 
-            context.fillStyle = "black";
-            context.font = "20px serif";
-            context.textBaseline = "top";
-            context.fillText("Points: " + score, 5, 5);
-        };
-        this.drawLost = function() {
-            var context = this.context;
+    Render.prototype.drawSegment = function(segment) {
+        var context = this.context;
 
-            context.fillStyle = "black";
-            context.font = "40px serif";
-            context.textBaseline = "top";
-            context.fillText("GAME OVER!", offsetX+25, offsetY+100);
+        context.strokeStyle = "black";
+        context.strokeRect(segment.x + offsetX, segment.y + offsetY, sizeOfSegment, sizeOfSegment);
+    };
+
+    Render.prototype.drawScore = function(score) {
+        var context = this.context;
+
+        context.fillStyle = "black";
+        context.font = "20px serif";
+        context.textBaseline = "top";
+        context.fillText("Points: " + score, 5, 5);
+    };
+
+    Render.prototype.drawLost = function() {
+        var context = this.context;
+
+        context.fillStyle = "black";
+        context.font = "40px serif";
+        context.textBaseline = "top";
+        context.fillText("GAME OVER!", offsetX+25, offsetY+100);
+    };
+
+    Render.prototype.drawGame = function(game) {
+        var context = this.context;
+        // drawing border
+        context.fillStyle = "white";
+        context.fillRect(0, 0, 310, 280);
+
+        context.strokeStyle = "black";
+        context.strokeRect(4, 29, 301, 251);
+
+        this.drawScore(game.points);
+
+        var snake = game.snake.segments;
+        var food = game.food;
+        var i;
+        for(i = 0; i < snake.length; i++) {
+            this.drawSegment(snake[i]);
         }
-        this.drawGame = function(game) {
-            var context = this.context;
-            // drawing border
-            context.fillStyle = "white";
-            context.fillRect(0, 0, 310, 280);
-
-            context.strokeStyle = "black";
-            context.strokeRect(4, 29, 301, 251);
-
-            this.drawScore(game.points);
-
-            var snake = game.snake.segments;
-            var food = game.food;
-            var i;
-            for(i = 0; i < snake.length; i++) {
-                this.drawSegment(snake[i]);
-            }
-            for(i = 0; i < food.length; i++) {
-                this.drawFood(food[i]);
-            }
-        };
+        for(i = 0; i < food.length; i++) {
+            this.drawFood(food[i]);
+        }
     };
 
     var game = {
@@ -101,6 +107,7 @@ $(document).ready(function () {
         food: [],
         gameSpeed: 200,
         interval: 0,
+
         initGame: function() {
             this.snake = new Snake();
             this.points = 0;
