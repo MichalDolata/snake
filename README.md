@@ -1,4 +1,5 @@
 # snake
+Use WSAD to control the snake
 
 ## Used
 - HTML5
