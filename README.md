@@ -7,4 +7,4 @@ Use WSAD to control the snake
 - jQuery
 
 ## Live demo
-[Demo](http://dolata.me/demos/snake/)
+[Demo](http://michaldolata.github.io/snake/)
